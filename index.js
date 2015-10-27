@@ -12,7 +12,7 @@ server.connection({
 
 client.connect();
 
-// Add the route
+// TestConnection to DB
 server.route({
     method: 'GET',
     path:'/',
@@ -24,6 +24,9 @@ server.route({
       });
     }
 });
+
+// Test Post method
+require('./registerUsers')(server);
 
 // Start the server
 server.start(function () {
