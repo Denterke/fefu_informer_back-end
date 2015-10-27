@@ -1,18 +1,27 @@
-var Hapi = require('hapi');
+var Hapi = require('hapi'); //require с hapi
+var pg = require('pg'); //require с postgres
 
 // Create a server with a host and port
 var server = new Hapi.Server();
+var client = new pg.Client("postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db");
+
 server.connection({
     host: '31.131.24.188',
     port: 8080
 });
+
+client.connect();
 
 // Add the route
 server.route({
     method: 'GET',
     path:'/',
     handler: function (request, reply) {
-        reply('hello world');
+      client.query('SELECT first_name FROM users', function(err, result) {
+        if(err) throw err;
+
+        reply (result.rows[0].first_name);
+      });
     }
 });
 
