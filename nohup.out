@@ -1,0 +1,165 @@
+Server running at: http://31.131.24.188:8080
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: EBADF, read
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+error: terminating connection due to administrator command
+    at Connection.parseE (/var/fefu_informer/node_modules/pg/lib/connection.js:539:11)
+    at Connection.parseMessage (/var/fefu_informer/node_modules/pg/lib/connection.js:366:17)
+    at Socket.<anonymous> (/var/fefu_informer/node_modules/pg/lib/connection.js:105:22)
+    at Socket.EventEmitter.emit (events.js:95:17)
+    at Socket.<anonymous> (_stream_readable.js:746:14)
+    at Socket.EventEmitter.emit (events.js:92:17)
+    at emitReadable_ (_stream_readable.js:408:10)
+    at emitReadable (_stream_readable.js:404:5)
+    at readableAddChunk (_stream_readable.js:165:9)
+    at Socket.Readable.push (_stream_readable.js:127:10)
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: EBADF, read
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: EBADF, read
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Register Users start at: http://31.131.24.188:8080/registerUsers
+Register Users start at: http://31.131.24.188:8080/registerUsers
+Server running at: http://31.131.24.188:8080
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: EBADF, read
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+
+error: terminating connection due to administrator command
+    at Connection.parseE (/var/fefu_informer/node_modules/pg/lib/connection.js:539:11)
+    at Connection.parseMessage (/var/fefu_informer/node_modules/pg/lib/connection.js:366:17)
+    at Socket.<anonymous> (/var/fefu_informer/node_modules/pg/lib/connection.js:105:22)
+    at Socket.EventEmitter.emit (events.js:95:17)
+    at Socket.<anonymous> (_stream_readable.js:746:14)
+    at Socket.EventEmitter.emit (events.js:92:17)
+    at emitReadable_ (_stream_readable.js:408:10)
+    at emitReadable (_stream_readable.js:404:5)
+    at readableAddChunk (_stream_readable.js:165:9)
+    at Socket.Readable.push (_stream_readable.js:127:10)
+error: terminating connection due to administrator command
+    at Connection.parseE (/var/fefu_informer/node_modules/pg/lib/connection.js:539:11)
+    at Connection.parseMessage (/var/fefu_informer/node_modules/pg/lib/connection.js:366:17)
+    at Socket.<anonymous> (/var/fefu_informer/node_modules/pg/lib/connection.js:105:22)
+    at Socket.EventEmitter.emit (events.js:95:17)
+    at Socket.<anonymous> (_stream_readable.js:746:14)
+    at Socket.EventEmitter.emit (events.js:92:17)
+    at emitReadable_ (_stream_readable.js:408:10)
+    at emitReadable (_stream_readable.js:404:5)
+    at readableAddChunk (_stream_readable.js:165:9)
+    at Socket.Readable.push (_stream_readable.js:127:10)
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+error: terminating connection due to administrator command
+    at Connection.parseE (/var/fefu_informer/node_modules/pg/lib/connection.js:539:11)
+    at Connection.parseMessage (/var/fefu_informer/node_modules/pg/lib/connection.js:366:17)
+    at Socket.<anonymous> (/var/fefu_informer/node_modules/pg/lib/connection.js:105:22)
+    at Socket.EventEmitter.emit (events.js:95:17)
+    at Socket.<anonymous> (_stream_readable.js:746:14)
+    at Socket.EventEmitter.emit (events.js:92:17)
+    at emitReadable_ (_stream_readable.js:408:10)
+    at emitReadable (_stream_readable.js:404:5)
+    at readableAddChunk (_stream_readable.js:165:9)
+    at Socket.Readable.push (_stream_readable.js:127:10)
+
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module './registerUser'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/var/fefu_informer/index.js:29:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module './registerUser'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/var/fefu_informer/index.js:29:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module './registerUser'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/var/fefu_informer/index.js:29:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+Server running at: http://31.131.24.188:8080
+null
+Server running at: http://31.131.24.188:8080
+null
+null
+null
+null
+null
+null
+null
+null
+null
+null
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+Server running at: http://31.131.24.188:8080
+{ lol: 'lol' }
+{}
+{}
+{}
+{ xyj: 'jopa' }
+Server running at: http://31.131.24.188:8080
