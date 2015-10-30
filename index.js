@@ -8,17 +8,16 @@ server.connection({
     port: 8080
 });
 
-
 server.route({
     method: 'GET',
     path:'/',
     handler: function (request, reply) {
-      reply('Server WORK!');
+      reply('WORK SERVER!');
     }
 });
 
-// register Users
-require('./registerUsers')(server);
+require('./registerUsers')(server); // register Users
+//require('./personalInfoUser')(server); // personal Info about user
 
 // Start the server
 server.start(function () {

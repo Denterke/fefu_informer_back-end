@@ -2,43 +2,48 @@ var fs = require('fs'); //file system
 var db = require('./dbConnection');
 
 var registerUser = function(server) {
-  db.connect();
   server.route({
     method: 'POST',
     path:'/registerUsers',
     handler: function (request, reply) {
-      var firstName = decodeURI(request.payload.firstName);
-      var lastName  = decodeURI(request.payload.lastName);
-      var avatar    = request.payload.fileUpload;
+
+      var firstName   = decodeURI(request.payload.firstName);
+      var lastName    = decodeURI(request.payload.lastName);
+      var avatar      = request.payload.fileUpload;
+      var phoneNumber = request.payload.phoneNumber;
+      var avatarSrc   = 'images/users_avatars/'+lastName+'avatar.jpg'; //сделать уникальное имя
+      var response    = 'new user added!';
 
       if (avatar)
         fs.writeFile(
-          'images/users_avatars/'+firstName+'avatar.jpg',
+          avatarSrc,
           avatar,
           function(err) {
             if (err) throw err;
           }
         );
 
-      db.query("INSERT INTO users (first_name, last_name) VALUES ('" +firstName+ "','" +lastName+"')", function(err, result) {
-        if(err) throw err;
-        reply('new user added!');
+      db.connect( function(err) {
+        if (err)
+          return console.error('could not connect to postgres', err);
+
+        db.query(
+          "INSERT INTO users (first_name, last_name, phone_number, avatar_src) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','"+avatarSrc+"')",
+          function(err, result) {
+            if (err) {
+              response = 'new user not added!';
+              throw err;
+            }
+
+          console.log(firstName, lastName, phoneNumber);
+          db.end();
+        });
       });
 
-      db.end();
+    reply(response);
+
     }
   });
-
-  server.register(require('inert'), function () {}); //for working with static file
-  server.route({
-    method: 'GET',
-    path:'/registerUsers',
-      handler: function (request, reply) {
-        reply('ok');
-        //reply.file('images/users_avatars/'+firstName+'avatar.jpg');
-      }
-  });
-
 };
 
 module.exports = registerUser;
