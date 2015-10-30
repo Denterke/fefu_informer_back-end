@@ -1,4 +1,6 @@
-var db = require('./dbConnection');
+var pg = require('pg'); //require с postgres
+var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
+
 
 var personalInfoUser = function(server) {
 
@@ -9,15 +11,19 @@ var personalInfoUser = function(server) {
     path:'/personalInfoUser/{userId}',
       handler: function (request, reply) {
         var userId = request.params.userId;
-        db.connect( function(err) {
+          pg.connect(conString, function(err, client, done) {
           if (err)
             return console.error('could not connect to postgres', err);
 
-          db.query("SELECT * FROM users WHERE id = '"+userId+"'", function(err, result) {
-            if (err) throw err;
-            db.end();
-            userInfo = result.rows[0];
-            reply("Имя:" + userInfo.first_name + " Фамилия:" + userInfo.last_name + " Ссылка на img: " + userInfo.avatar_src);
+          client.query(
+            "SELECT * FROM users WHERE id = '"+userId+"'",
+            function(err, result) {
+              done();
+
+              if (err) throw err;
+
+              userInfo = result.rows[0];
+              reply("Имя:" + userInfo.first_name + " Фамилия:" + userInfo.last_name + " Ссылка на img: " + userInfo.avatar_src);
           });
         });
       }

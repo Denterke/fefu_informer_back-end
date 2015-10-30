@@ -1,5 +1,6 @@
 var fs = require('fs'); //file system
-var db = require('./dbConnection');
+var pg = require('pg'); //require с postgres
+var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
 
 var registerUser = function(server) {
   server.route({
@@ -23,20 +24,22 @@ var registerUser = function(server) {
           }
         );
 
-      db.connect( function(err) {
-        if (err)
+      pg.connect(conString, function(err, client, done) {
+        if (err) {
+          response = 'new user not added!';
           return console.error('could not connect to postgres', err);
+        }
 
-        db.query(
+        client.query(
           "INSERT INTO users (first_name, last_name, phone_number, avatar_src) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','"+avatarSrc+"')",
           function(err, result) {
+            done();
             if (err) {
               response = 'new user not added!';
               throw err;
             }
 
           console.log(firstName, lastName, phoneNumber);
-          db.end();
         });
       });
 
