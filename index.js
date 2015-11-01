@@ -18,6 +18,7 @@ server.route({
 
 require('./registerUsers')(server); // register Users
 require('./personalInfoUser')(server); // personal Info about user
+require('./newsLine')(server); // personal Info about user
 
 // Start the server
 server.start(function () {

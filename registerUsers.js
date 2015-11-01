@@ -14,6 +14,7 @@ var registerUser = function(server) {
       var lastName    = decodeURI(request.payload.lastName);
       var avatar      = request.payload.fileUpload;
       var phoneNumber = request.payload.phoneNumber;
+      var phoneCode   = randomString({length: 4, numeric: false, letters: true}) + randomString({length: 2, numeric: true, letters: false});
       var avatarSrc   = 'images/users_avatars/default_avatar.png'; //сделать уникальное имя
       var response    = 'new user added!';
 
@@ -47,12 +48,12 @@ var registerUser = function(server) {
 
           pg.connect(conString, function(err, client, done) {
             if (err) {
-              response = 'new user not added!';
+              response = "bad connection with database";
               return console.error('could not connect to postgres', err);
             }
 
             client.query(
-              "INSERT INTO users (first_name, last_name, phone_number, avatar_src) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','"+avatarSrc+"')",
+              "INSERT INTO users (first_name, last_name, phone_number, avatar_src, phone_code) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','http://31.131.24.188:8080/"+avatarSrc+"','"+phoneCode+"')",
               function(err, result) {
                 done();
                 if (err) {
@@ -60,13 +61,53 @@ var registerUser = function(server) {
                   throw err;
                 }
 
-              console.log(firstName, lastName, phoneNumber);
+              console.log(firstName, lastName, phoneNumber, phoneCode);
             });
           });
         }
     });
 
     reply(response);
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path:'/registerUsers/{phoneCode}&{userId}',
+    handler: function (request, reply) {
+
+      var userCode;
+      var response;
+      var userId = request.params.userId;
+
+        pg.connect(conString, function(err, client, done) {
+          if (err) {
+            response = "bad connection with database";
+            return console.error('could not connect to postgres', err);
+          }
+
+          client.query(
+            "SELECT (phone_code) FROM users WHERE id = '"+userId+"'",
+            function(err, result) {
+              done();
+              if (err) {
+                response = "bad connection with database";
+                throw err;
+              }
+
+              userCode = result.rows[0].phone_code;
+              console.log("server code: " + userCode);
+
+              if (request.params.phoneCode == userCode)
+                response = "регистрация пройдена успешно!";
+              else response = "неверный код подтверждения!";
+
+              return reply(response);
+          });
+        });
+
+      console.log(response);
+      console.log("user code: " + request.params.phoneCode);
     }
   });
 };
