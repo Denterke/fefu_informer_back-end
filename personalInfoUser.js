@@ -12,8 +12,10 @@ var personalInfoUser = function(server) {
       handler: function (request, reply) {
         var userId = request.params.userId;
           pg.connect(conString, function(err, client, done) {
-          if (err)
+          if (err) {
+            reply('could not connect to postgres');
             return console.error('could not connect to postgres', err);
+          }
 
           client.query(
             "SELECT * FROM users WHERE id = '"+userId+"'",
@@ -23,7 +25,7 @@ var personalInfoUser = function(server) {
               if (err) throw err;
 
               userInfo = result.rows[0];
-              reply("Имя:" + userInfo.first_name + " Фамилия:" + userInfo.last_name + " Ссылка на img: " + userInfo.avatar_src);
+              reply(result.rows[0]);
           });
         });
       }

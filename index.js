@@ -17,6 +17,7 @@ server.route({
 });
 
 require('./registerUsers')(server); // register Users
+require('./authUsers')(server); // user auth
 require('./personalInfoUser')(server); // personal Info about user
 require('./newsLine')(server); // personal Info about user
 

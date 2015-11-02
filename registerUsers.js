@@ -1,7 +1,8 @@
-var fs = require('fs'); //file system
-var Joi = require('joi');
-var pg = require('pg'); //require postgres
-var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
+var fs  = require('fs'); //file system
+var joi = require('joi');
+var pg  = require('pg'); //require postgres
+var md5 = require('md5'); //require postgres
+var conString    = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
 var randomString = require('random-string');
 
 var registerUser = function(server) {
@@ -14,25 +15,27 @@ var registerUser = function(server) {
       var lastName    = decodeURI(request.payload.lastName);
       var avatar      = request.payload.fileUpload;
       var phoneNumber = request.payload.phoneNumber;
+      var password    = request.payload.password;
       var phoneCode   = randomString({length: 4, numeric: false, letters: true}) + randomString({length: 2, numeric: true, letters: false});
       var avatarSrc   = 'images/users_avatars/default_avatar.png'; //сделать уникальное имя
-      var response    = 'new user added!';
 
       var schema = {
-        firstName: Joi.string().regex(/[\u0400-\u04FF]/).min(3).max(15).required(),
-        lastName: Joi.string().regex(/[\u0400-\u04FF]/).min(5).max(20).required(),
-        phoneNumber: Joi.string().regex(/^\d+$/).length(11)
+        firstName: joi.string().regex(/[\u0400-\u04FF]/).min(3).max(15).required(),
+        lastName: joi.string().regex(/[\u0400-\u04FF]/).min(5).max(20).required(),
+        phoneNumber: joi.string().regex(/^\d+$/).length(11),
+        password: joi.string().alphanum().min(4).max(10)
       };
       var value = {
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
+        password: password
       };
 
-      Joi.validate(value, schema, function (err, value) {
+      joi.validate(value, schema, function (err, value) {
         if (err) {
-          response = err.details[0].message;
           console.log(err.details[0].message);
+          return reply(err.details[0].message);
         }
         else {
           if (avatar) {//дописать проверку расширения
@@ -48,26 +51,25 @@ var registerUser = function(server) {
 
           pg.connect(conString, function(err, client, done) {
             if (err) {
-              response = "bad connection with database";
+              reply('bad connection with database');
               return console.error('could not connect to postgres', err);
             }
 
+
             client.query(
-              "INSERT INTO users (first_name, last_name, phone_number, avatar_src, phone_code) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','http://31.131.24.188:8080/"+avatarSrc+"','"+phoneCode+"')",
+              "INSERT INTO users (first_name, last_name, phone_number, avatar_src, phone_code, password) VALUES ('" +firstName+ "','"+lastName+"','"+phoneNumber+"','http://31.131.24.188:8080/"+avatarSrc+"','"+phoneCode+"','"+md5(password)+"')",
               function(err, result) {
                 done();
                 if (err) {
-                  response = 'new user not added!';
-                  throw err;
+                  console.log(err);
+                  return reply('this number has been added!');
                 }
-
-              console.log(firstName, lastName, phoneNumber, phoneCode);
+              console.log(firstName, lastName, phoneNumber, phoneCode, md5(password));
+              return reply('success');
             });
           });
         }
-    });
-
-    reply(response);
+      });
     }
   });
 
@@ -77,12 +79,11 @@ var registerUser = function(server) {
     handler: function (request, reply) {
 
       var userCode;
-      var response;
       var userId = request.params.userId;
 
         pg.connect(conString, function(err, client, done) {
           if (err) {
-            response = "bad connection with database";
+            reply('bad connection with database');
             return console.error('could not connect to postgres', err);
           }
 
@@ -91,22 +92,20 @@ var registerUser = function(server) {
             function(err, result) {
               done();
               if (err) {
-                response = "bad connection with database";
                 throw err;
+                return reply('bad connection with database');
               }
 
               userCode = result.rows[0].phone_code;
               console.log("server code: " + userCode);
 
               if (request.params.phoneCode == userCode)
-                response = "регистрация пройдена успешно!";
-              else response = "неверный код подтверждения!";
-
-              return reply(response);
+                return reply('регистрация пройдена успешно!');
+              else
+                return reply('неверный код подтверждения!');
           });
         });
 
-      console.log(response);
       console.log("user code: " + request.params.phoneCode);
     }
   });

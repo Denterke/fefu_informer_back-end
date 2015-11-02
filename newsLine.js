@@ -5,27 +5,39 @@ var newsLine = function(server) {
 
   server.route({
     method: 'GET',
-    path:'/newsLine',
+    path:'/newsLine/{offsetValue}&{newsStatus}',
     handler: function (request, reply) {
+      var whereOfficial;
 
+      pg.connect(conString, function(err, client, done) {
+        if (err) {
+          reply('bad connection with database');
+          return console.error('could not connect to postgres', err);
+        }
 
-        pg.connect(conString, function(err, client, done) {
-          if (err) {
-            response = "bad connection with database";
-            return console.error('could not connect to postgres', err);
-          }
+        switch (request.params.newsStatus) {
+          case "a":
+            whereOfficial = "";
+            break;
+          case "o":
+            whereOfficial = "WHERE is_official=true";
+            break;
+          case "u":
+            whereOfficial = "WHERE is_official=false";
+            break;
+        }
 
-          client.query(
-            "SELECT * FROM news",
-            function(err, result) {
-              done();
-              if (err) {
-                response = "bad connection with database";
-                throw err;
-              }
-              return reply(result.rows);
-          });
+        client.query(
+          "SELECT * FROM news " +whereOfficial+ " ORDER BY id DESC LIMIT 5 OFFSET " + request.params.offsetValue,
+          function(err, result) {
+            done();
+            if (err) {
+              throw err;
+              return reply('bad connection with database');
+            }
+            return reply(result.rows);
         });
+      });
     }
   });
 
@@ -34,7 +46,7 @@ var newsLine = function(server) {
       method: 'GET',
       path:'/images/newsline/{imgName}',
       handler: function (request, reply) {
-        console.log(request.params.imgName);
+        //console.log(request.params.imgName);
         reply.file('images/newsline/' + request.params.imgName);
       }
     });
