@@ -11,11 +11,11 @@ var authUsers = function(server) {
     path:'/authUsers',
     handler: function (request, reply) {
 
-      var phoneNumber = request.payload.phoneNumber;
+      var phoneNumber = request.payload.phoneNumber.substring(1);
       var password    = request.payload.password;
 
       var schema = {
-        phoneNumber: joi.string().regex(/^\d+$/).length(11),
+        phoneNumber: joi.string().regex(/^\d+$/).length(10),
         password: joi.string().alphanum().min(4).max(10)
       };
       var value = {
@@ -28,28 +28,27 @@ var authUsers = function(server) {
           reply(err.details[0].message);
           return console.log(err.details[0].message);
         }
-        else {
-          pg.connect(conString, function(err, client, done) {
-            if (err) {
-              reply("bad connection with database");
-              return console.error('could not connect to postgres', err);
-            }
+      });
 
-            client.query(
-              "SELECT COUNT (*) FROM users WHERE phone_number = '"+phoneNumber+"' AND password = '"+md5(password)+"'",
-              function(err, result) {
-                done();
-                if (err) {
-                  throw err;
-                  return reply('bad connection with database');
-                }
-              if (result.rows[0].count == 1)
-                return reply('success');
-              else
-                return reply('failed');
-            });
-          });
+      pg.connect(conString, function(err, client, done) {
+        if (err) {
+          reply("bad connection with database");
+          return console.error('could not connect to postgres', err);
         }
+
+        client.query(
+          "SELECT COUNT (*) FROM users WHERE phone_number = '"+phoneNumber+"' AND password = '"+md5(password)+"' AND confirmation = 't'",
+          function(err, result) {
+            done();
+            if (err) {
+              throw err;
+              return reply('bad connection with database');
+            }
+          if (result.rows[0].count == 1)
+            return reply('success');
+          else
+            return reply('failed');
+        });
       });
     }
   });

@@ -35,6 +35,7 @@ var newsLine = function(server) {
               throw err;
               return reply('bad connection with database');
             }
+            //console.log(result.rows);
             return reply(result.rows);
         });
       });

@@ -8,9 +8,9 @@ var personalInfoUser = function(server) {
 
   server.route({
     method: 'GET',
-    path:'/personalInfoUser/{userId}',
+    path:'/personalInfoUser/{phoneNumber}',
       handler: function (request, reply) {
-        var userId = request.params.userId;
+        var phoneNumber = request.params.phoneNumber.substring(1);
           pg.connect(conString, function(err, client, done) {
           if (err) {
             reply('could not connect to postgres');
@@ -18,7 +18,7 @@ var personalInfoUser = function(server) {
           }
 
           client.query(
-            "SELECT * FROM users WHERE id = '"+userId+"'",
+            "SELECT * FROM users WHERE phone_number = '"+phoneNumber+"'",
             function(err, result) {
               done();
 
