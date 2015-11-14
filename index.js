@@ -16,15 +16,15 @@ server.route({
     }
 });
 
-require('./registrationUsers')(server); // register Users
-require('./validationUsers')(server) // validate auth
-require('./authUsers')(server); // user auth
+require('./reg&authUsers/registrationUsers')(server); // register Users
+require('./reg&authUsers/validationUsers')(server) // validate auth
+require('./reg&authUsers/authUsers')(server); // user auth
 
-require('./allUsersInfo')(server); // personal Info about all user
-require('./userInfo')(server); // personal Info about user
+require('./interactionUsers/allUsersInfo')(server); // personal Info about all user
+require('./interactionUsers/userInfo')(server); // personal Info about user
 
-require('./additionNews')(server); // add new news;
-require('./newsline')(server); // line of news;
+require('./news/additionNews')(server); // add new news;
+require('./news/newsline')(server); // line of news;
 
 require('./staticFiles')(server); // get static file - img and others
 
