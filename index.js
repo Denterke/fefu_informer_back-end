@@ -1,4 +1,4 @@
-var Hapi = require('hapi'); //require с hapi
+var Hapi = require('hapi');
 
 // Create a server with a host and port
 var server = new Hapi.Server();
@@ -7,22 +7,26 @@ server.connection({
     port: 8080
 });
 
+//testing work of server
 server.route({
     method: 'GET',
     path:'/',
     handler: function (request, reply) {
-      reply('WORK SERVER!');
+      reply('SERVER IS WORK!');
     }
 });
 
-require('./registerUsers')(server); // register Users
-require('./validateUsers')(server) // validate auth
+require('./registrationUsers')(server); // register Users
+require('./validationUsers')(server) // validate auth
 require('./authUsers')(server); // user auth
 
-require('./personalInfoUser')(server); // personal Info about user
+require('./allUsersInfo')(server); // personal Info about all user
+require('./userInfo')(server); // personal Info about user
 
-require('./addingNews')(server); // add new news;
-require('./newsLine')(server); // line of news;
+require('./additionNews')(server); // add new news;
+require('./newsline')(server); // line of news;
+
+require('./staticFiles')(server); // get static file - img and others
 
 // Start the server
 server.start(function () {
