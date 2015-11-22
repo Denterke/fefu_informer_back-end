@@ -1,53 +1,43 @@
-var pg  = require('pg'); //require с postgres
-var md5 = require('md5');
-var joi = require('joi');
-var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
+var dbTables = require('../databaseModels/mappingModel'); //map of database tables
+var joi = require('joi'); // module of validation
 
-
-var authUsers = function(server) {
-
+var authUsers = function (server) {
   server.route({
     method: 'POST',
     path:'/authUsers',
     handler: function (request, reply) {
+      var users       = dbTables.users; // select table users
 
       var phoneNumber = request.payload.phoneNumber.substring(1);
       var password    = request.payload.password;
 
+      var response    = ''; // response from server to client
+
+      //validating entered data
       var schema = {
-        phoneNumber: joi.string().regex(/^\d+$/).length(10),
-        password: joi.string().alphanum().min(4).max(10)
+        _phoneNumber : joi.string().regex(/^\d+$/).length(10),
+        _password    : joi.string().required()
       };
+
       var value = {
-        phoneNumber: phoneNumber,
-        password: password
+        _phoneNumber : phoneNumber,
+        _password    : password
       };
 
       joi.validate(value, schema, function (err, value) {
-        if (err) {
-          reply(err.details[0].message);
-          return console.log(err.details[0].message);
-        }
-      });
+        if (err)
+          return reply(require('../auxiliaries/validatorsHandler')(err.details[0].message)).code(400); // validation's errors hadler
 
-      pg.connect(conString, function(err, client, done) {
-        if (err) {
-          reply("bad connection with database");
-          return console.error('could not connect to postgres', err);
-        }
-
-        client.query(
-          "SELECT COUNT (*) FROM users WHERE phone_number = '"+phoneNumber+"' AND password = '"+md5(password)+"' AND confirmation = 't'",
-          function(err, result) {
-            done();
-            if (err) {
-              throw err;
-              return reply('bad connection with database');
-            }
-          if (result.rows[0].count == 1)
-            return reply('success');
-          else
-            return reply('failed');
+        // checking whether there is a user with such data
+        users.count({ phone_number: phoneNumber, password: password, confirmation: true }, function (err, count) {
+          if (count === 1) {
+            response = JSON.stringify({ "status": 200, "message": "Авторизация успешна!" });
+            return reply(response).code(200);
+          }
+          else {
+            response = JSON.stringify({ "status": 400, "message": "Авторизация не пройдена!" });
+            return reply(response).code(400);
+          };
         });
       });
     }

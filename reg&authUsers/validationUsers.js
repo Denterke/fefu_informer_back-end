@@ -1,52 +1,44 @@
-var pg  = require('pg'); //require с postgres
-var joi = require('joi');
-var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
+var dbTables = require('../databaseModels/mappingModel'); //map of database tables
+var joi = require('joi'); // module of validation
 
-
-var validationUsers = function(server) {
-
+var validationUsers = function (server) {
   server.route({
     method: 'POST',
     path:'/validationUsers',
     handler: function (request, reply) {
+      var users       = dbTables.users; // select table users
 
       var phoneNumber = request.payload.phoneNumber.substring(1);
       var phoneCode   = request.payload.phoneCode;
 
+      var response    = ''; // response from server to client
+
+      //validating entered data
       var schema = {
-        phoneNumber: joi.string().regex(/^\d+$/).length(10),
-        phoneCode: joi.string().alphanum().length(4)
+        _phoneNumber : joi.string().regex(/^\d+$/).length(10),
+        _phoneCode   : joi.string().regex(/^\d+$/).length(4)
       };
+
       var value = {
-        phoneNumber: phoneNumber,
-        phoneCode: phoneCode
+        _phoneNumber : phoneNumber,
+        _phoneCode   : phoneCode
       };
 
       joi.validate(value, schema, function (err, value) {
-        if (err) {
-          reply(err.details[0].message);
-          return console.log(err.details[0].message);
-        }
-      });
+        if (err)
+          return reply(require('../auxiliaries/validatorsHandler')(err.details[0].message)).code(400);
 
-      pg.connect(conString, function(err, client, done) {
-        if (err) {
-          reply("bad connection with database");
-          return console.error('could not connect to postgres', err);
-        }
-
-        client.query(
-          "UPDATE users SET confirmation = 't' WHERE phone_number = '"+phoneNumber+"' AND phone_code = '"+phoneCode+"'",
-          function(err, result) {
-            done();
-            if (err) {
-              throw err;
-              return reply(err);
-            }
-            if (result.rowCount == 1)
-              return reply('success');
-            else
-              return reply('failed');
+        // checking validation's code of user
+        users.find({ phone_number: phoneNumber, phone_code: phoneCode }, function (err, raw) {
+          if (raw[0] === undefined) {
+            response = JSON.stringify({ "status": 400, "message": "Верификация не пройдена!" });
+            return reply(response).code(400);
+          }
+          else {
+            raw[0].save({ confirmation: true });
+            response = JSON.stringify({ "status": 200, "message": "Верификация успешна!" });
+            return reply(response).code(200);
+          };
         });
       });
     }

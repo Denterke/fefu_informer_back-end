@@ -1,31 +1,24 @@
-var pg = require('pg');
-var conString = "postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db";
+var dbTables = require('../databaseModels/mappingModel'); // map of database tables
 
-
-var allUsersInfo = function(server) {
-
+var allUsersInfo = function (server) {
   server.route({
     method: 'GET',
     path:'/allUsersInfo',
-      handler: function (request, reply) {
-          pg.connect(conString, function(err, client, done) {
-          if (err) {
-            reply('could not connect to postgres');
-            return console.error('could not connect to postgres', err);
-          }
+    handler: function (request, reply) {
+      var users = dbTables.users; // select table users
 
-          client.query(
-            "SELECT first_name, last_name, avatar_src FROM users WHERE confirmation='true'",
-            function(err, result) {
-              if (err)
-                return reply('bad connection with database');
-
-              done();
-
-              return reply(result.rows);
-          });
-        });
-      }
+      // searching info about all users, only verified users!
+      users.find({ confirmation: true }).only("first_name", "last_name", "avatar_src").run(function (err, users) {
+        if (users.length === 0) {
+          response = JSON.stringify({ "status": 400, "message": "Пользователи не найдены!" });
+          return reply(response).code(400);
+        }
+        else {
+          response = users;
+          return reply(response).code(200);
+        };
+      });
+    }
   });
 };
 
