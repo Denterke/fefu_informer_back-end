@@ -1,6 +1,6 @@
 var orm = require("orm");
 
-var usersDB = orm.connect("postgres://postgres:bafffefu123@31.131.24.188:5432/fefu_informer_db", function (err, db) {
+var usersDB = orm.connect("postgres://user:pass@31.131.24.188:5432/fefu_informer_db", function (err, db) {
   var response;
 
   if (err) {
