@@ -34,7 +34,7 @@ var usersDB = orm.connect("postgres://postgres:bafffefu123@31.131.24.188:5432/fe
     departure    : String,
     payment      : { type: 'integer' },
     note         : String,
-    phone_number : { type: 'text', key: true},
+    phone_number : String,
     creator      : String,
     id           : { type: 'serial' }
   });

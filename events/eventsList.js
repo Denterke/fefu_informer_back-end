@@ -28,7 +28,7 @@ var eventsList = function (server) {
       };
 
       // selection of events, consider the type of events, the response size - 5 events
-      events.find({ is_official: eventsStatus }).limit(5).offset(request.params.offsetValue).run(function (err, events) {
+      events.find({ is_official: eventsStatus }).orderRaw("?? DESC", ['id']).limit(5).offset(request.params.offsetValue).run(function (err, events) {
         if (events.length === 0) {
           response = JSON.stringify({ "status": 200, "message": "События закончились!" });
           return reply(response).code(200);

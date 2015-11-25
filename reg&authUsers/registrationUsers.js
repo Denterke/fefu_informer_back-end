@@ -41,11 +41,8 @@ var registrationUser = function (server) {
           return reply(require('../auxiliaries/validatorsHandler')(err.details[0].message)).code(400); // validation's errors hadler
 
         if (avatar) {
-          avatarSrc   = 'images/users_avatars/'+randomString()+lastName+'.jpg';
-
-          //if image is in base64
-          if ((typeof(avatar) === 'string') && (avatar.indexOf('base64') != -1))
-            avatar = new Buffer(avatar.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""), "base64");
+          avatarSrc   = 'images/users_avatars/'+randomString(10)+'.jpg';
+          avatar = new Buffer(avatar, 'base64');
 
           // creating images
           fs.writeFile(

@@ -36,15 +36,14 @@ var additionEvents = function (server) {
       };
 
       joi.validate(value, schema, function (err, value) {
-        if (err)
+        if (err) {
+          console.log(err.details[0].message);
           return reply(require('../auxiliaries/validatorsHandler')(err.details[0].message)).code(400); // validation's errors hadler
+        };
 
         if (image) {
-          imgSrc   = 'images/eventsline/'+randomString()+title+'.jpg';
-
-          //if image is in base64
-          if ((typeof(image) == 'string') && (image.indexOf('base64') != -1))
-            image = new Buffer(image.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""), "base64");
+          imgSrc   = 'images/eventsList/'+randomString(10)+'.jpg';
+          image = new Buffer(image, 'base64');
 
           fs.writeFile(
             imgSrc,

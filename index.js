@@ -30,25 +30,10 @@ require('./events/additionEvents')(server); // add new news
 require('./events/eventsList')(server); // line of news
 
 require('./auxiliaries/staticFiles')(server); // get static file - img and others
+//for work of Ilya
+require('./auxiliaries/deleteUser')(server); // testing sockets...
 
 require('./chatServer')(server); // testing sockets...
-
-// for Ilya
-var dbTables = require('./databaseModels/mappingModel'); //map of database tables
-server.route({
-    method: 'GET',
-    path:'/{phoneNumber}',
-    handler: function (request, reply) {
-      var users       = dbTables.users; // select table users
-      var phoneNumber = request.params.phoneNumber.substring(1); // becouse preservation in the database a phone number without '8'
-      console.log(phoneNumber);
-
-      users.find({ phone_number: phoneNumber }, function (err, user) {
-        user[0].remove();
-      });
-      reply("removed!");
-    }
-});
 
 // Start the server
 server.start(function () {
